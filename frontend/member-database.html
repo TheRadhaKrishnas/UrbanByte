@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UrbanByte - Member Database</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard">
+    <div class="sidebar">...</div>
+    <div class="main-content">
+      <div class="page-card">
+        <a href="javascript:history.back()" class="back-btn">← Back</a>
+        <h2>Member Database</h2>
+        <div style="display:flex; gap:1rem; margin-bottom:1rem;">
+          <button class="btn btn-primary" onclick="alert('Add member form (demo)')">+ Add Member</button>
+          <button class="btn btn-secondary" onclick="alert('Export CSV')">Export CSV</button>
+        </div>
+        <table>
+          <tr><th>Code</th><th>Name</th><th>Flat</th><th>Phone</th><th>Email</th><th>Action</th></tr>
+          <tr><td>MEM123</td><td>Anant Vijay</td><td>A-101</td><td>9876543210</td><td>anant@ex.com</td><td><button class="btn-small">Edit</button> <button class="btn-small">Delete</button></td></tr>
+          <tr><td>MEM456</td><td>Priya Sharma</td><td>B-202</td><td>9876543211</td><td>priya@ex.com</td><td><button class="btn-small">Edit</button> <button class="btn-small">Delete</button></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script src="js/auth.js"></script>
+  <script src="js/shared.js"></script>
+  <script>
+    // Ensure only management can access
+    const user = JSON.parse(sessionStorage.getItem('user'));
+    if (user && user.role !== 'management') {
+      window.location.href = 'member-dashboard.html';
+    }
+  </script>
+</body>
+</html>

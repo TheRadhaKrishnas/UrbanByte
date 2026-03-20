@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UrbanByte - Polls & Forum</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar (Member version) -->
+    <div class="sidebar">...</div>
+
+    <div class="main-content">
+      <div class="page-card">
+        <a href="javascript:history.back()" class="back-btn">← Back</a>
+        <h2>Community Polls</h2>
+        <div id="pollsList"></div>
+
+        <h2>Discussion Forum</h2>
+        <div style="margin-bottom:1rem;">
+          <textarea id="forumMsg" placeholder="Start a new discussion..." rows="3" style="width:100%; padding:0.8rem;"></textarea>
+          <button class="btn btn-primary" onclick="postForum()">Post</button>
+        </div>
+        <div id="forumDiscussions" style="border-top:1px solid #E9CFC9; padding-top:1rem;">
+          <!-- Static forum for now -->
+          <p><strong>Ramesh:</strong> Any electrician recommendation?</p>
+          <p style="color:#666; font-size:0.9rem;">2 replies · Last reply by Suresh 1d ago</p>
+          <p><strong>Priya:</strong> Lost keys near block B</p>
+          <p style="color:#666; font-size:0.9rem;">1 reply · Last reply by Anjali 3h ago</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/shared.js"></script>
+  <script>
+    async function loadPolls() {
+      const container = document.getElementById('pollsList');
+      container.innerHTML = '<p>Loading polls...</p>';
+      try {
+        const res = await fetch('http://localhost:5000/api/polls');
+        const polls = await res.json();
+        if (polls.length === 0) {
+          container.innerHTML = '<p>No active polls.</p>';
+          return;
+        }
+        container.innerHTML = polls.map(poll => {
+          const options = JSON.parse(poll.options);
+          return `
+            <div style="border:1px solid #E9CFC9; padding:1rem; margin-bottom:1rem; border-radius:8px;">
+              <p><strong>${poll.title}</strong></p>
+              <div id="poll-${poll.id}">
+                ${options.map((opt, idx) => `
+                  <button class="btn btn-small" onclick="vote(${poll.id}, ${idx})">${opt}</button>
+                `).join('')}
+              </div>
+              <div id="results-${poll.id}" style="margin-top:0.5rem;"></div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = '<p>Failed to load polls.</p>';
+      }
+    }
+
+    window.vote = async function(pollId, optionIndex) {
+      const user = JSON.parse(sessionStorage.getItem('user'));
+      if (!user) { alert('Please login'); return; }
+      try {
+        const res = await fetch(`http://localhost:5000/api/polls/${pollId}/vote`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: user.id, option_index: optionIndex })
+        });
+        if (res.ok) {
+          alert('Vote cast!');
+          loadPollResults(pollId);
+        } else {
+          const data = await res.json();
+          alert(data.error || 'Vote failed');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Network error');
+      }
+    };
+
+    async function loadPollResults(pollId) {
+      try {
+        const res = await fetch(`http://localhost:5000/api/polls/${pollId}/results`);
+        const data = await res.json();
+        const resultDiv = document.getElementById(`results-${pollId}`);
+        if (resultDiv) {
+          resultDiv.innerHTML = data.options.map((opt, i) => `${opt}: ${data.votes[i]} votes`).join(' · ');
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function postForum() {
+      const msg = document.getElementById('forumMsg').value.trim();
+      if (!msg) return;
+      alert('Forum post saved (demo).');
+      document.getElementById('forumMsg').value = '';
+      // Add to list (temporary)
+      const discussions = document.getElementById('forumDiscussions');
+      const newPost = document.createElement('div');
+      newPost.innerHTML = `<p><strong>You:</strong> ${msg}</p><p style="color:#666; font-size:0.9rem;">Just now</p>`;
+      discussions.insertBefore(newPost, discussions.firstChild);
+    }
+
+    document.addEventListener('DOMContentLoaded', loadPolls);
+  </script>
+</body>
+</html>

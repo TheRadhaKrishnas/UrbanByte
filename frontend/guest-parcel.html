@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UrbanByte - Guest & Parcel</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar (Member version) -->
+    <div class="sidebar">...</div>
+    <div class="main-content">
+      <div class="page-card">
+        <a href="javascript:history.back()" class="back-btn">← Back</a>
+        <h2>📦 Guest & Parcel Information</h2>
+
+        <div style="display:flex; gap:1rem; margin-bottom:1rem;">
+          <button class="btn btn-primary" onclick="document.getElementById('visitorForm').style.display='block'">➕ Pre-approve Visitor</button>
+        </div>
+
+        <div id="visitorForm" style="display:none; background:#f5f5f5; padding:1rem; margin-bottom:1rem;">
+          <h3>New Visitor</h3>
+          <input type="text" id="visitorName" placeholder="Name" style="margin-bottom:0.5rem; width:100%; padding:0.5rem;">
+          <input type="text" id="visitorFlat" placeholder="Flat Number" style="margin-bottom:0.5rem; width:100%; padding:0.5rem;">
+          <input type="text" id="visitorPurpose" placeholder="Purpose" style="margin-bottom:0.5rem; width:100%; padding:0.5rem;">
+          <button onclick="submitVisitor()" class="btn btn-primary">Submit</button>
+          <button onclick="document.getElementById('visitorForm').style.display='none'" class="btn btn-secondary">Cancel</button>
+        </div>
+
+        <h3>Recent Visitors</h3>
+        <div class="table-responsive">
+          <table id="visitorsTable">
+            <thead>
+              <tr><th>Date</th><th>Name</th><th>Flat</th><th>Purpose</th><th>Status</th> </tr>
+            </thead>
+            <tbody id="visitorsList"></tbody>
+          </table>
+        </div>
+
+        <h3 style="margin-top:2rem;">Parcels Waiting</h3>
+        <div class="table-responsive">
+          <table id="parcelsTable">
+            <thead><tr><th>Date</th><th>For (Flat)</th><th>Courier</th><th>Action</th></tr></thead>
+            <tbody id="parcelsList"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="js/auth.js"></script>
+  <script src="js/shared.js"></script>
+  <script>
+    async function loadVisitors() {
+      try {
+        const res = await fetch('http://localhost:5000/api/visitors');
+        const visitors = await res.json();
+        const tbody = document.getElementById('visitorsList');
+        if (visitors.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5">No visitors yet.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = visitors.map(v => `
+          <tr>
+            <td>${new Date(v.created_at).toLocaleDateString('en-IN')}</td>
+            <td>${v.visitor_name}</td>
+            <td>${v.flat}</td>
+            <td>${v.purpose || '-'}</td>
+            <td>${v.status}</td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function submitVisitor() {
+      const name = document.getElementById('visitorName').value.trim();
+      const flat = document.getElementById('visitorFlat').value.trim();
+      const purpose = document.getElementById('visitorPurpose').value.trim();
+      if (!name || !flat) {
+        alert('Please fill name and flat number');
+        return;
+      }
+      try {
+        const res = await fetch('http://localhost:5000/api/visitors', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ visitor_name: name, flat, purpose })
+        });
+        if (res.ok) {
+          alert('Visitor pre-approved!');
+          document.getElementById('visitorName').value = '';
+          document.getElementById('visitorFlat').value = '';
+          document.getElementById('visitorPurpose').value = '';
+          document.getElementById('visitorForm').style.display = 'none';
+          loadVisitors();
+        } else {
+          alert('Failed to add visitor');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Network error');
+      }
+    }
+
+    // For parcels, we'll use static data (can be extended later)
+    function loadParcels() {
+      const parcels = [
+        { date: '15-03-2026', flat: '101', courier: 'Amazon' },
+        { date: '14-03-2026', flat: '202', courier: 'Flipkart' }
+      ];
+      const tbody = document.getElementById('parcelsList');
+      tbody.innerHTML = parcels.map(p => `
+        <tr>
+          <td>${p.date}</td>
+          <td>${p.flat}</td>
+          <td>${p.courier}</td>
+          <td><button class="btn-small" onclick="alert('Marked collected (demo)')">Collected</button></td>
+        </tr>
+      `).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadVisitors();
+      loadParcels();
+    });
+  </script>
+</body>
+</html>

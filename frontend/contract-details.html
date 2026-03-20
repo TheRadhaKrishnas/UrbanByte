@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UrbanByte - Contracts</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar (Management version) -->
+    <div class="sidebar">
+      <div class="user-info">
+        <div class="user-icon" id="userIcon"></div>
+        <div class="user-name" id="userName"></div>
+      </div>
+      <div class="nav-buttons">
+        <button class="nav-btn" onclick="location.href='management-dashboard.html'">🏠 Home</button>
+        <button class="nav-btn" onclick="location.href='profile.html'">👤 Profile</button>
+        <button class="nav-btn" onclick="location.href='polls-forum.html'">📊 Polls & Forum</button>
+        <button class="nav-btn" onclick="location.href='member-database.html'">👥 Member Database</button>
+        <button class="nav-btn" onclick="location.href='payment.html'">💳 Payment Access</button>
+        <button class="nav-btn" onclick="location.href='contract-details.html'">📑 Contract Details</button>
+        <button class="nav-btn" onclick="location.href='complaint.html'">📝 Complaint Access</button>
+        <button class="nav-btn" onclick="location.href='documents.html'">📄 Document Management</button>
+        <button class="nav-btn" onclick="location.href='society-details.html'">🏘️ Society Details</button>
+        <button class="nav-btn" onclick="location.href='management-details.html'">📋 Committee Details</button>
+        <button class="nav-btn" onclick="location.href='emergency-contact.html'">🚨 Emergency Setup</button>
+      </div>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+
+    <div class="main-content">
+      <div class="page-card">
+        <a href="javascript:history.back()" class="back-btn">← Back</a>
+        <h2>Vendor Contracts</h2>
+        <table>
+          <tr><th>Vendor</th><th>Service</th><th>Contract Period</th><th>Value</th><th>Status</th></tr>
+          <tr><td>ABC Security</td><td>Security Services</td><td>01-01-2026 to 31-12-2026</td><td>₹ 12,00,000</td><td>Active</td></tr>
+          <tr><td>CleanCity</td><td>Housekeeping</td><td>01-02-2026 to 31-01-2027</td><td>₹ 8,50,000</td><td>Active</td></tr>
+          <tr><td>LiftTech</td><td>Elevator Maintenance</td><td>01-03-2026 to 28-02-2027</td><td>₹ 1,20,000</td><td>Pending</td></tr>
+        </table>
+        <button class="btn btn-primary" style="margin-top:1rem;" onclick="alert('Add contract form (demo)')">+ Add Contract</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/shared.js"></script>
+  <script>
+    // Restrict to management only
+    document.addEventListener('DOMContentLoaded', function() {
+      const user = JSON.parse(sessionStorage.getItem('user'));
+      if (!user || user.role !== 'management') {
+        window.location.href = 'index.html';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UrbanByte - Profile</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard">
+    <div class="sidebar">
+      <div class="user-info">
+        <div class="user-icon" id="userIcon"></div>
+        <div class="user-name" id="userName"></div>
+      </div>
+      <div class="nav-buttons">
+        <button class="nav-btn" onclick="location.href='member-dashboard.html'">🏠 Home</button>
+        <button class="nav-btn" onclick="location.href='profile.html'">👤 Profile</button>
+        <button class="nav-btn" onclick="location.href='complaint.html'">📝 Complaint</button>
+        <button class="nav-btn" onclick="location.href='polls-forum.html'">📊 Polls</button>
+        <button class="nav-btn" onclick="location.href='emergency-contact.html'">🚨 Emergency</button>
+      </div>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+    <div class="main-content">
+      <div class="page-card">
+        <a href="javascript:history.back()" class="back-btn">← Back</a>
+        <h2>My Profile</h2>
+        <form id="profileForm">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" id="name" required>
+          </div>
+          <div class="form-group">
+            <label>Member Code</label>
+            <input type="text" id="memberCode" disabled>
+          </div>
+          <div class="form-group">
+            <label>Flat</label>
+            <input type="text" id="flat">
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" id="phone">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="email">
+          </div>
+          <div id="designationGroup" style="display:none;">
+            <div class="form-group">
+              <label>Designation</label>
+              <input type="text" id="designation">
+            </div>
+          </div>
+          <div id="memberFields" style="display:none;">
+            <div class="form-group">
+              <label>Age</label>
+              <input type="number" id="age">
+            </div>
+            <div class="form-group">
+              <label>Gender</label>
+              <select id="gender">
+                <option value="">Select</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Family Members (count)</label>
+              <input type="number" id="familyMembers">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Update Profile</button>
+          <span id="updateMessage" style="margin-left:1rem;"></span>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="js/auth.js"></script>
+  <script src="js/shared.js"></script>
+  <script>
+    let currentUser = null;
+
+    document.addEventListener('DOMContentLoaded', async function() {
+      const user = JSON.parse(sessionStorage.getItem('user'));
+      if (!user) {
+        window.location.href = 'index.html';
+        return;
+      }
+      currentUser = user;
+
+      // Fetch latest user data from API to get profile fields
+      try {
+        const res = await fetch(`http://localhost:5000/api/user/${user.id}`);
+        const data = await res.json();
+        if (res.ok) {
+          currentUser = data;
+          // Update session storage with latest
+          sessionStorage.setItem('user', JSON.stringify(currentUser));
+        }
+      } catch (err) {
+        console.error('Failed to fetch user data', err);
+      }
+
+      // Populate form
+      document.getElementById('name').value = currentUser.name || '';
+      document.getElementById('memberCode').value = currentUser.member_code || '';
+      document.getElementById('flat').value = currentUser.flat || '';
+      document.getElementById('phone').value = currentUser.phone || '';
+      document.getElementById('email').value = currentUser.email || '';
+
+      if (currentUser.role === 'management') {
+        document.getElementById('designationGroup').style.display = 'block';
+        document.getElementById('designation').value = currentUser.designation || '';
+      } else {
+        document.getElementById('memberFields').style.display = 'block';
+        document.getElementById('age').value = currentUser.age || '';
+        document.getElementById('gender').value = currentUser.gender || '';
+        document.getElementById('familyMembers').value = currentUser.family_members || '';
+      }
+
+      const form = document.getElementById('profileForm');
+      form.addEventListener('submit', updateProfile);
+    });
+
+    async function updateProfile(e) {
+      e.preventDefault();
+      const updateData = {
+        name: document.getElementById('name').value,
+        flat: document.getElementById('flat').value,
+        phone: document.getElementById('phone').value,
+        email: document.getElementById('email').value
+      };
+      if (currentUser.role === 'management') {
+        updateData.designation = document.getElementById('designation').value;
+      } else {
+        const ageVal = document.getElementById('age').value;
+        updateData.age = ageVal ? parseInt(ageVal) : null;
+        updateData.gender = document.getElementById('gender').value || null;
+        const famVal = document.getElementById('familyMembers').value;
+        updateData.family_members = famVal ? parseInt(famVal) : null;
+      }
+
+      try {
+        const res = await fetch(`http://localhost:5000/api/user/${currentUser.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updateData)
+        });
+        const data = await res.json();
+        if (res.ok) {
+          // Update session storage with new user data
+          sessionStorage.setItem('user', JSON.stringify(data.user));
+          document.getElementById('updateMessage').textContent = '✅ Profile updated successfully!';
+          document.getElementById('updateMessage').style.color = 'green';
+          // Reload sidebar info (name, etc.)
+          loadUserSidebar();
+        } else {
+          document.getElementById('updateMessage').textContent = '❌ ' + (data.error || 'Update failed');
+          document.getElementById('updateMessage').style.color = 'red';
+        }
+      } catch (err) {
+        console.error(err);
+        document.getElementById('updateMessage').textContent = '❌ Network error';
+        document.getElementById('updateMessage').style.color = 'red';
+      }
+    }
+  </script>
+</body>
+</html>

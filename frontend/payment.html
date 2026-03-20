@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UrbanByte - Payments</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar (Member version) -->
+    <div class="sidebar">...</div>
+
+    <div class="main-content">
+      <div class="page-card">
+        <a href="javascript:history.back()" class="back-btn">← Back</a>
+        <h2>Society Payment Statement</h2>
+        <p><strong>2025-26</strong> <button class="btn-small" onclick="alert('Print demo')">Print</button></p>
+        <p>To submit fees, visit Dashboard or Payments Portal</p>
+        <table>
+          <tr><th>#</th><th>Payment Type</th><th>Due Amount</th><th>Last Date</th><th>Received</th><th>Status</th></tr>
+          <tr><td>1</td><td>Development payment</td><td>₹ 6,000.00</td><td>07-08-2025</td><td>₹ 0.00</td><td>Pending</td></tr>
+          <tr><td>2</td><td>Maintenance</td><td>₹ 2,500.00</td><td>20-03-2026</td><td>₹ 0.00</td><td>Pending</td></tr>
+          <tr><td>3</td><td>Water Charges</td><td>₹ 800.00</td><td>20-03-2026</td><td>₹ 800.00</td><td>Paid</td></tr>
+        </table>
+        <div style="margin-top:2rem;">
+          <button class="btn btn-primary" onclick="alert('Redirect to payment gateway (demo)')">Pay Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="js/auth.js"></script>
+  <script src="js/shared.js"></script>
+</body>
+</html>

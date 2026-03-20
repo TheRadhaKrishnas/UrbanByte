@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UrbanByte - Management Committee</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar (Member version) -->
+    <div class="sidebar">
+      <div class="user-info">
+        <div class="user-icon" id="userIcon"></div>
+        <div class="user-name" id="userName"></div>
+      </div>
+      <div class="nav-buttons">
+        <button class="nav-btn" onclick="location.href='member-dashboard.html'">🏠 Home</button>
+        <button class="nav-btn" onclick="location.href='profile.html'">👤 Profile</button>
+        <button class="nav-btn" onclick="location.href='complaint.html'">📝 Complaint Registration</button>
+        <button class="nav-btn" onclick="location.href='management-details.html'">📋 Management Details</button>
+        <button class="nav-btn" onclick="location.href='polls-forum.html'">📊 Polls & Forum</button>
+        <button class="nav-btn" onclick="location.href='society-details.html'">🏘️ Society Details</button>
+        <button class="nav-btn" onclick="location.href='contact-management.html'">📞 Contact Management</button>
+        <button class="nav-btn" onclick="location.href='emergency-contact.html'">🚨 Emergency Contact</button>
+        <button class="nav-btn" onclick="location.href='guest-parcel.html'">📦 Guest/Parcel Info</button>
+        <button class="nav-btn" onclick="location.href='payment.html'">💳 Payment Page</button>
+        <button class="nav-btn" onclick="location.href='documents.html'">📄 Document Details</button>
+      </div>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="page-card">
+        <a href="javascript:history.back()" class="back-btn">← Back</a>
+        <h2>Management Committee</h2>
+        <table>
+          <tr><th>Position</th><th>Name</th><th>Contact</th><th>Email</th></tr>
+          <tr><td>Chairperson</td><td>Mr. Ramesh Gupta</td><td>9876543212</td><td>ramesh@example.com</td></tr>
+          <tr><td>Secretary</td><td>Ms. Neha Sharma</td><td>9876543213</td><td>neha@example.com</td></tr>
+          <tr><td>Treasurer</td><td>Mr. Suresh Kumar</td><td>9876543214</td><td>suresh@example.com</td></tr>
+          <tr><td>Member</td><td>Mrs. Anjali Mehta</td><td>9876543215</td><td>anjali@example.com</td></tr>
+          <tr><td>Member</td><td>Mr. Vikram Singh</td><td>9876543216</td><td>vikram@example.com</td></tr>
+        </table>
+        <p style="margin-top:1rem; font-style:italic;">Office hours: Mon-Fri 5:00 PM - 7:00 PM</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/shared.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const user = JSON.parse(sessionStorage.getItem('user'));
+      if (!user) window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>

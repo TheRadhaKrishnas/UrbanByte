@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UrbanByte - Emergency</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar (Member version) -->
+    <div class="sidebar">
+      <div class="user-info">
+        <div class="user-icon" id="userIcon"></div>
+        <div class="user-name" id="userName"></div>
+      </div>
+      <div class="nav-buttons">
+        <button class="nav-btn" onclick="location.href='member-dashboard.html'">🏠 Home</button>
+        <button class="nav-btn" onclick="location.href='profile.html'">👤 Profile</button>
+        <button class="nav-btn" onclick="location.href='complaint.html'">📝 Complaint Registration</button>
+        <button class="nav-btn" onclick="location.href='management-details.html'">📋 Management Details</button>
+        <button class="nav-btn" onclick="location.href='polls-forum.html'">📊 Polls & Forum</button>
+        <button class="nav-btn" onclick="location.href='society-details.html'">🏘️ Society Details</button>
+        <button class="nav-btn" onclick="location.href='contact-management.html'">📞 Contact Management</button>
+        <button class="nav-btn" onclick="location.href='emergency-contact.html'">🚨 Emergency Contact</button>
+        <button class="nav-btn" onclick="location.href='guest-parcel.html'">📦 Guest/Parcel Info</button>
+        <button class="nav-btn" onclick="location.href='payment.html'">💳 Payment Page</button>
+        <button class="nav-btn" onclick="location.href='documents.html'">📄 Document Details</button>
+      </div>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="page-card">
+        <a href="javascript:history.back()" class="back-btn">← Back</a>
+        <h2>🚨 Emergency Contacts</h2>
+        <div style="margin-bottom:2rem;">
+          <button class="sos-btn" onclick="alert('SOS Alert Sent! Security has been notified.')">SOS</button>
+        </div>
+        <table>
+          <tr><th>Service</th><th>Number</th></tr>
+          <tr><td>Police</td><td>100</td></tr>
+          <tr><td>Ambulance</td><td>102</td></tr>
+          <tr><td>Fire</td><td>101</td></tr>
+          <tr><td>Security Guard (Gate)</td><td>9876543222</td></tr>
+          <tr><td>Committee Head</td><td>9876543212</td></tr>
+          <tr><td>Nearest Hospital</td><td>011-12345678</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/shared.js"></script>
+</body>
+</html>

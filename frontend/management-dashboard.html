@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UrbanByte - Management Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar (Management version) -->
+    <div class="sidebar">
+      <div class="user-info">
+        <div class="user-icon" id="userIcon"></div>
+        <div class="user-name" id="userName"></div>
+      </div>
+      <div class="nav-buttons">
+        <button class="nav-btn" onclick="location.href='management-dashboard.html'">🏠 Home</button>
+        <button class="nav-btn" onclick="location.href='profile.html'">👤 Profile</button>
+        <button class="nav-btn" onclick="location.href='polls-forum.html'">📊 Polls & Forum</button>
+        <button class="nav-btn" onclick="location.href='member-database.html'">👥 Member Database</button>
+        <button class="nav-btn" onclick="location.href='payment.html'">💳 Payment Access</button>
+        <button class="nav-btn" onclick="location.href='contract-details.html'">📑 Contract Details</button>
+        <button class="nav-btn" onclick="location.href='complaint.html'">📝 Complaint Access</button>
+        <button class="nav-btn" onclick="location.href='documents.html'">📄 Document Management</button>
+        <button class="nav-btn" onclick="location.href='society-details.html'">🏘️ Society Details</button>
+        <button class="nav-btn" onclick="location.href='management-details.html'">📋 Committee Details</button>
+        <button class="nav-btn" onclick="location.href='emergency-contact.html'">🚨 Emergency Setup</button>
+      </div>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+
+    <div class="main-content">
+      <div class="welcome-box">
+        <h2>Welcome, <span id="welcomeName"></span>!</h2>
+        <p>Designation: <span id="welcomeDesignation"></span></p>
+      </div>
+
+      <div class="priority-box">
+        <h3>🔔 Pending Actions</h3>
+        <div id="pendingList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/shared.js"></script>
+  <script>
+    async function loadPending() {
+      const container = document.getElementById('pendingList');
+      container.innerHTML = '<p>Loading...</p>';
+      try {
+        // Fetch pending complaints
+        const complaintsRes = await fetch('http://localhost:5000/api/complaints');
+        const complaints = await complaintsRes.json();
+        const pendingComplaints = complaints.filter(c => c.status === 'pending');
+        const inProgressComplaints = complaints.filter(c => c.status === 'in_progress');
+
+        // Fetch pending visitors
+        const visitorsRes = await fetch('http://localhost:5000/api/visitors');
+        const visitors = await visitorsRes.json();
+        const pendingVisitors = visitors.filter(v => v.status === 'pending');
+
+        container.innerHTML = `
+          <div class="notification-item priority-high">
+            <span class="date">Today</span>
+            <span>${pendingComplaints.length} new complaints pending review.</span>
+          </div>
+          <div class="notification-item priority-high">
+            <span class="date">Today</span>
+            <span>${pendingVisitors.length} visitor pass requests pending.</span>
+          </div>
+          <div class="notification-item priority-medium">
+            <span class="date">Today</span>
+            <span>${inProgressComplaints.length} complaints in progress.</span>
+          </div>
+        `;
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = '<p>Could not load pending actions.</p>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = JSON.parse(sessionStorage.getItem('user'));
+      if (user) {
+        document.getElementById('welcomeName').textContent = user.name || 'Manager';
+        document.getElementById('welcomeDesignation').textContent = user.designation || 'Committee Member';
+        loadPending();
+      }
+    });
+  </script>
+</body>
+</html>

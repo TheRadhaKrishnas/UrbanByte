@@ -6,13 +6,16 @@ to run urbanbyte on local host, follow these steps
 5. copy the address of the backend folder, and type this in new cmd window, cd backend address
 6. now type the following commands -
  python -m venv venv
-venv\Scripts\activate        # Windows
+
+venv\Scripts\activate # Windows
 or
-source venv/bin/activate  # macOS/Linux
+source venv/bin/activate # macOS/Linux
+
 pip install -r requirements.txt
+
 python app.py
-7. now open browser and type this http://localhost:5500
-8. your website is now functioning
+8. now open browser and type this http://localhost:5500
+9. your website is now functioning
 
 
 

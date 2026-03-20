@@ -1,5 +1,5 @@
 to run urbanbyte on local host, follow these steps
-1. make sure to unzip the zip file.
+1. make sure to unzip the zip file or clone it from cmd - git clone https://github.com/your-username/UrbanByte.git
 2. first copy the address of the frontend folder, open the cmd and type cd frontend address
 3. then type this command python -m http.server 5500
 4. then open a new cmd window, don't close the existing one, but open a sepreate window
